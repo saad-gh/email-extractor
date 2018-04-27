@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <style type="text/css">
+.toggleDisplay{
+display:none !important;
+}	
+.container{
+padding:0 3%;
+}
+div select{
+text-align:left;
+width:100%;
+}
+#processing{
+position:absolute;
+background-image:url("https://www.wallies.com/filebin/images/loading_apple.gif");
+background-size:50px 50px;
+background-repeat:no-repeat;
+background-color:white;
+background-position:center;
+opacity:0.9;
+width:100%;
+height:90px;
+z-index:50;
+margin-top:0;
+}
+.errorBorder{
+border:1px solid red;
+box-shadow:0 1px 2px rgba(0,0,0,0.3) inset;
+}
+.containerED,.containerFlex,.containerEM{
+display:flex;
+flex-direction:row;
+margin-top:6px;
+align-items:center;
+}
+
+.item-date,.item-days,.item-options{
+flex-grow:3;
+}
+
+div[id^="containerDS_"],div[id^="containerFAF_"]{
+overflow:hidden;
+height:29px;
+}
+
+button[id^="btnShowDS"],button[id^="btnShowFAF"]{
+width: 100%;
+background: url(https://ssl.gstatic.com/ui/v1/disclosure/grey-disclosure-arrow-up-down.png), -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+background:url(https://ssl.gstatic.com/ui/v1/disclosure/grey-disclosure-arrow-up-down.png), -o-linear-gradient(top, #f5f5f5, #f1f1f1);
+-webkit-appearance: none;
+background: url(https://ssl.gstatic.com/ui/v1/disclosure/grey-disclosure-arrow-up-down.png), -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
+background: url(https://ssl.gstatic.com/ui/v1/disclosure/grey-disclosure-arrow-up-down.png), -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
+background: url(https://ssl.gstatic.com/ui/v1/disclosure/grey-disclosure-arrow-up-down.png), linear-gradient(top, #f5f5f5, #f1f1f1);
+width: 100%;
+text-align: left;
+padding-left: 4px;
+background-position: 95% 50%;
+background-repeat: no-repeat;
+}
+    </style>
+  </head>
+  <body>
+  <div class="container">
+  <form id="myForm">
+  <div class="block form-group">
+  <label for="customEmailNotification">Status notification email</label>
+  <input name="cen" type="text" id="customEmailNotification" style="width: 100%;"> <!--id change from customEmailNotification-->
+</div>
+ <div class="block form-group">
+  <label for="select">Select sheet</label>
+  <select id="sheets">
+		<? 
+        setSheetNames();        
+        var snfi;        
+        for(var i = 0;i < shtNames.length;i++){ 
+        snfi = shtNames[i].normalizeForId();  
+        ?>
+		<option value="<?= snfi ?>"><?= shtNames[i] ?></option>
+		<? } ?>
+  </select>
+</div>
+
+<? for(var i=0;i<shtNames.length;i++) { snfi = shtNames[i].normalizeForId(); ?>
+<div class="fields block toggleDisplay" id="K_<?= snfi ?>"> 
+<div class="block form-group">
+  <label for="from_<?= snfi ?>">From</label>
+  <input name="frm" type="text" id="from_<?= snfi ?>" style="width: 100%;"> <!-- from_ to fr_ (From)-->
+</div>
+<div class="block form-group">
+  <label for="subject_<?= snfi ?>">Subject</label>
+  <input name="sub" type="text" id="subject_<?= snfi ?>" style="width: 100%;"> <!-- subject_ -->
+</div>
+<div class="block form-group">
+  <label for="fileName_<?= snfi ?>">File name</label>
+  <input name="fn" type="text" id="fileName_<?= snfi ?>" style="width: 100%;">
+</div>
+
+<div class="block">
+  <input type="checkbox" id="active_<?= snfi ?>"> <!-- active_ to sfop_ (Select for operation) -->
+  <label for="active_<?= snfi ?>">Select for Operation</label>
+</div>
+<div>
+  <input type="checkbox" id="append_<?= snfi ?>">
+  <label for="append_<?= snfi ?>">Append data</label>
+</div>
+
+<div class="block"></div>
+<div id="containerDS_<?= snfi?>" class="block">
+<div>
+<button id="btnShowDS_<?= snfi?>">Default Settings</button>
+</div>
+<div class="containerEM">
+ <div class="item-label">
+  <label for="select">Extract:&nbsp;</label>
+  </div>
+  <div class="item-options">
+  <select id="extractMode_<?= snfi?>">
+  <option value="latest">LATEST</option>
+  <option value="bySubject">By Subject</option>
+  <!-- <option value="byDate">By Date</option> -->
+  </select>
+  </div>
+  </div>
+  
+<div id="containerED_<?= snfi ?>" class="containerED toggleDisplay">
+<div class="item-label">
+  <label for="extractionDate_<?= snfi ?>">Date:&nbsp;</label>
+</div>
+<div class="item-date"> 
+  <input type="date" id="extractionDate_<?= snfi ?>" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" style="width: 100%;">  
+</div>
+</div>
+
+<div>
+  <input type="checkbox" id="isAlreadyUpdated_<?= snfi ?>">
+  <label for="isAlreadyUpdated_<?= snfi ?>">Do not add data again today</label>
+</div>
+<div>
+  <input type="checkbox" id="ignoreForRecTrg_<?= snfi ?>">
+  <label for="ignoreForRecTrg_<?= snfi ?>">Ignore for recursive trigger</label>
+</div>
+</div>
+
+<div class="block"></div>
+<div id="containerFAF_<?= snfi ?>" class="block">
+<button id="btnShowFAF_<?= snfi ?>">Formulas and Filters</button>
+<div class="block">
+  <input type="checkbox" id="appendFormula_<?= snfi ?>">
+  <label for="appendFormula_<?= snfi ?>">Add formula columns</label>
+</div>
+<div>
+  <label for="formulaColumns_<?= snfi ?>">Columns</label>
+  <input name="forCols" type="text" id="formulaColumns_<?= snfi ?>" style="width: 100%;">
+</div>
+<div class="block">
+  <label for="formulas_<?= snfi ?>">Formulas</label>
+  <textarea name="forExps" id="formulas_<?= snfi ?>" rows="5" style="width:100%"></textarea>
+</div>
+
+<div class="block">
+  <input type="checkbox" id="filter_<?= snfi ?>">
+  <label for="filter_<?= snfi ?>">Filter columns</label>
+</div>
+<div>
+  <label for="filterColumns_<?= snfi ?>">Columns</label>
+  <input name="ftrCols" type="text" id="filterColumns_<?= snfi ?>" style="width: 100%;">
+</div>
+<div class="block">
+  <label for="filterValues_<?= snfi ?>">Values</label>
+  <textarea name="ftrVals" id="filterValues_<?= snfi ?>" rows="5" style="width: 100%;"></textarea>
+</div>
+</div>
+
+<div class="block"></div>
+<div class="block">
+  <input type="checkbox" id="removeRowsWeekly_<?= snfi ?>_CSVE"><label for="removeRows_<?= snfi ?>">Remove rows on trigger</label>  
+</div>
+<div>
+<input type="checkbox" id="sortBeforeDel_<?= snfi ?>_CSVE"><label for="sortBeforeDel_<?= snfi ?>">Sort rows before deleting</label>
+</div>
+<div>
+  <label for="dateColumn_<?= snfi ?>">Date column</label>
+  <input name="dateColumn" type="text" id="dateColumn_<?= snfi ?>_CSVE" style="width: 100%;">
+</div>
+<div class="containerFlex">
+<div class="item-days">
+  &nbsp;for&nbsp;
+  <input style="width: 30px;text-align: right;" name="forDays" type="text" id="forDays_<?= snfi ?>_CSVE">&nbsp;days
+</div>
+<div class="item-btn"><button id="btnUpdateQuery_<?= snfi ?>_CSVE" class="action">Update</button></div>
+</div>
+
+</div>
+<? } ?>  
+
+<div class="block"></div>
+<div class="block">
+  <input type="checkbox" id="checkAgain_CSVE">
+  <label for="checkAgain_CSVE">Check again after</label>
+</div>
+<div>
+  <input name="checkAgainMins" type="text" id="checkAgainMins_CSVE" style="width:39%;">&nbsp;mins,&nbsp;upto&nbsp;<input name="checkAgainLimit" type="text" id="checkAgainLimit_CSVE" style="width:35%;">
+</div>
+
+<div class="block"></div>
+<div class="block">
+  
+  <label for="weeklyTrigger">Delete rows weekly </label><input type="radio" name="deleteRows" id="weeklyTrigger">
+  <label for="dailyTrigger"> Delete rows daily </label><input type="radio" name="deleteRows" id="dailyTriggerDR">
+</div>
+<div>
+  <label for="qhs">Query Host Sheet</label>
+  <input name="qhs" type="text" id="qhs_CSVE" style="width: 100%;">
+</div>
+
+<div id="processing" class="block"></div>
+<div class="block form-group"><button id="btnSet" class="action" style="width:46.8%">Set properties</button>
+<button id="btnGetReports" class="create" style="width:46.8%">Get reports</button></div>
+
+<div class="block form-group"><button id="btnSelectAll" style="width:46.8%">Select all</button>
+<button id="btnUnSelectAll" style="width:46.8%">Unselect all</button></div>
+
+<div class="block form-group"><button id="btnSetDefProps" class="action" style="width:100%">SET DEFAULT SETTINGS</button>
+</div>
+
+ </form>
+ </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+			<script>
+
+$(document).ready(function(){
+console.log("console reference");
+  String.prototype.normalizeForId = function(){
+    return this.split(" ").join("").replace(/'/g,"").replace(/\(/g,"").replace(/\)/g,"");
+  }
+function isQHSRequired(){            
+  $('input[id^="removeRowsWeekly_"]').each(function(){
+    if(this.checked)
+      return true;
+  });
+}
+
+function areRecFieldsRequired(){
+  if(document.getElementById("checkAgain_CSVE").checked){
+    return true
+  } else {
+    return false
+  }            
+}
+  
+  $.validator.addMethod(
+    "regex",
+    function(value, element, regexp) {
+      var re = new RegExp(regexp);
+      return this.optional(element) || re.test(value);
+    },
+    "Please check your input."
+  );     
+  
+  var validator = $("#myForm").validate({
+    rules:{
+      cen:"email",
+      frm:{email:true,required:true},
+      sub:{required:true, minlength:3,maxlength:70},
+      fn:{required:true,minlength:3,maxlength:70},
+      forCols:{regex:"^[0-9]?[0-9](,[0-9]?[0-9])*$"},
+      ftrCols:{regex:"^[0-9]?[0-9](,[0-9]?[0-9])*$"},
+      dt_atHr:"number",
+      forDays:"number",
+      dateColumn:"number",
+      qhs:{required:isQHSRequired},      
+      checkAgainMins:{number:true,required:areRecFieldsRequired},
+      checkAgainLimit:{number:true,required:areRecFieldsRequired}
+    }
+  });
+  
+google.script.run.withSuccessHandler(onSuccess).withFailureHandler(genericFailureHandler).getProperties();
+  
+  function onSuccess(data){  
+  
+    var oJson = data; 
+    var propsWT;
+    var id;                    
+    var props;
+    var e;
+    var eId;
+    var sheetsMeta;
+    var queryHostSheet;
+    var dt = Date.now();
+    
+    var backendProps = ["lastUpdated","PropertyStoreKey","formulaProps","filterProps"];
+    
+    for(var key in oJson){ 
+      props = JSON.parse(oJson[key]);
+      
+      if(key.match(/_SHEET_CSVE$/g)){
+        id = props.name.normalizeForId();
+        for(var prop in props){
+        if(backendProps.indexOf(prop) === -1){
+        
+          eId = prop + "_" + id;
+          
+          e = $("#" + eId);
+          
+          if(e != undefined && e.prop('tagName') != undefined)
+            if(e.attr("type") == "text" || e.prop("tagName") == "TEXTAREA")
+              e.val(props[prop]); 
+            else if(e.attr("type") == "date"){
+              if(props[prop] == "LATEST" || props[prop] == undefined){
+              e.val(dt.getYear() + "-" + (dt.getMonth() + 1) + "-" + (dt.getDay() + 1));
+              } else {              
+              e.val(props[prop]);
+              }
+            } else if(e.attr("type") == "checkbox"){                       
+              document.getElementById(eId).checked = props[prop];              
+            } 
+            else if(e.prop("tagName").toLowerCase() == "select"){
+            e.val(props[prop] || "latest");
+            if(props[prop] == "byDate"){
+            $("#containerED_" + id).removeClass("toggleDisplay");
+            //Continue here: Also add condition of checking id of the element in if condition
+            }
+            
+            }
+        }
+       }
+        
+      } else if(key.match(/GLOBAL_CSVE/g)) {
+        for(var prop in props){                    
+          id = prop;
+          e = $("#" + id);
+          if(e != undefined)
+            if(e.attr("type") == "text" || e.prop("tagName") == "TEXTAREA")
+              e.val(props[prop]); 
+            else if(e.attr("type") == "checkbox")                       
+              document.getElementById(id).checked = props[prop]; 
+        }        
+        
+      } else if(key.match(/weeklyTrigger_Meta_CSVE/g)){      
+        propsWT = props.propsWeeklyTrigger;
+        if(Object.keys(propsWT).length > 0){                    
+          sheetsMeta = propsWT.sheetsMeta;
+          queryHostSheet = propsWT.queryHostSheet;
+          for(var i = 0;i < sheetsMeta.length;i++){
+            id = sheetsMeta[i].name.normalizeForId();
+            document.getElementById("dateColumn_" + id + "_CSVE").value = sheetsMeta[i].dateCol; 
+            document.getElementById("forDays_" + id + "_CSVE").value = sheetsMeta[i].daysWorth;
+            document.getElementById("removeRowsWeekly_" + id + "_CSVE").checked = !sheetsMeta[i].remove;
+            document.getElementById("sortBeforeDel_" + id + "_CSVE").checked = sheetsMeta[i].sortDel;                    
+          }
+          document.getElementById("weeklyTrigger").checked = propsWT.isSetWeekly;
+          document.getElementById("dailyTriggerDR").checked = propsWT.isSetDaily;
+          document.getElementById("qhs_CSVE").value = queryHostSheet;
+        }
+      }                  
+    }
+    $("#" + document.getElementsByClassName("fields")[0].id).removeClass("toggleDisplay");        
+    $("#processing").toggle();
+  }  
+  
+//  var alertDiv = function(title,message){ 
+//    $("div.alert").html("<strong>" + title + "</strong> " + message); 
+//    switch(title){
+//      case "Processing":
+//        document.getElementById("alert").setAttribute("class","alert alert-info");
+//        break;
+//      case "Success":
+//        document.getElementById("alert").setAttribute("class","alert alert-success");
+//        setTimeout(function(){
+//          $("#alert").addClass("noVisibility");
+//        },1500);
+//        break;
+//      case "Error":
+//        if(message == "A process is already in progress"){
+//          document.getElementById("alert").setAttribute("class","alert alert-danger");
+//        } else {
+//          document.getElementById("alert").setAttribute("class","alert alert-danger");
+//          setTimeout(function(){
+//            $("#alert").addClass("noVisibility");
+//          },1500);
+//        }
+//        break;
+//    }
+//  };
+//  var cbHandler = function(e){
+//    switch(e){	
+//      case -1:
+//        alert("Email thread not found. \nPlease make sure From and Subject fields are correct.");
+//        break;
+//      case -2:
+//        alert("Attachment not found. \nPlease make sure File name field is correct.");
+//        break;
+//      case -3:
+//        alert("File format is not supported. Only CSVs can be parsed.");
+//        break;
+//      case -4:
+//        alert("Formula colums cannot be one of existing columns");
+//        break;
+//      default:
+//        e = JSON.parse(e);
+//        alert(e.stack + ": " + e.message);
+//        break;
+//    }			
+//  };
+  
+  function dataException(b){
+    switch(b){	
+      case -1:
+        alert("Number of filter columns and values is not same.");
+        break;
+      case -2:
+        alert("Number of formula columns and expressions is not same.");
+        break;
+    }	
+    
+  }
+  
+  function checkInput(){
+    var ftrVals,ftrCols,forExps,forCols;
+    $("#sheets > option").each((function(ftrVals,ftrCols,forExps,forCols){ return function(){
+      ftrVals = document.getElementById("filterValues_" + $(this).val()).value;
+      ftrCols = document.getElementById("filterColumns_" + $(this).val()).value;
+      forExps = document.getElementById("formulas_" + $(this).val()).value; 
+      forCols = document.getElementById("formulaColumns_" + $(this).val()).value;  
+      
+      if(ftrCols.split(',').length != ftrVals.split('\n').length){
+        return -1;
+      }
+      
+      if(forCols.split(',').length != forExps.split('\n').length){
+        return -2
+      }
+      
+      return 1;
+      
+    }
+                                                                         }(ftrVals,ftrCols,forExps,forCols)));
+  }
+  
+  var gei = function(id){return 
+  
+  document.getElementById(id).value;
+                         
+                        };
+  $('button[id^="btnUpdateQuery"').on("click",function(){
+    
+    var sel = document.getElementById("sheets");
+    var sheetMeta = {};
+    
+    sheetMeta.name = sel.options[sel.selectedIndex].text;
+    var shtId = sheetMeta.name.split(" ").join("").replace(/'/g,"").replace(/\(/g,"").replace(/\)/g,"");
+    
+    if(!document.getElementById("removeRowsWeekly_" + shtId + "_CSVE").checked)
+      return;
+    
+    if(!$("#myForm").valid()){
+      validator.showErrors();
+      return;
+    } 
+    disableButtons();    
+    
+    sheetMeta.dateCol = document.getElementById("dateColumn_" + shtId + "_CSVE").value; 
+    sheetMeta.daysWorth = document.getElementById("forDays_" + shtId + "_CSVE").value;
+    sheetMeta.remove = false;
+    google.script.run.withSuccessHandler(genericSuccessHandler).withFailureHandler(genericFailureHandler).updateQuery(sheetMeta);
+    
+  });
+  
+//  $("#btnDelRecTrg").on("click",function(){
+//    google.script.run.delRecursiveTriggerByForce();
+//    
+//  });
+  
+  $("input[name='deleteRows']").click(function()
+                                      {
+                                        var previousValue = $(this).prop('previousValue');
+                                        var name = $(this).prop('name');
+                                        
+                                        if (previousValue == 'checked')
+                                        {
+                                          $(this).removeProp('checked');
+                                          $(this).prop('previousValue', false);
+                                        }
+                                        else
+                                        {
+                                          $("input[name='deleteRows']:radio").prop('previousValue', false);
+                                          $(this).prop('previousValue', 'checked');
+                                        }
+                                      });
+                                      
+                                      function daysDifference(d0, d1) {
+                                      var diff = new Date(+d1).setHours(12) - new Date(+d0).setHours(12);
+                                      return Math.round(diff/8.64e7);
+                                      }
+   function control(purpose) {
+ 	return function () {
+        
+ 		if (!$("#myForm").valid()) {
+ 			validator.showErrors();
+ 			return;
+ 		}
+
+ 		var bCheckInput = checkInput();
+
+ 		if (bCheckInput != 1) {
+ 			dataException(bCheckInput);
+ 		}
+
+ 		disableButtons();
+ 		toggleProcDiv();
+        
+        var sJson = {};
+ 		var sJsonSht,
+ 		sJsonFilter,
+ 		sJsonFormula,
+ 		sJsonWeeklyTriggers,
+ 		sheetsMeta;
+
+ 		if (purpose == "set") {
+ 			sJson["GLOBAL_CSVE"] = {}; 			
+ 			sJsonWeeklyTriggers = {};
+ 			sJsonWeeklyTriggers["sheetsMeta"] = [];
+ 			sheetsMeta = sJsonWeeklyTriggers["sheetsMeta"];
+ 			sJsonWeeklyTriggers["queryHostSheet"] = "";
+
+ 			if (document.getElementById("customEmailNotification") != "")
+ 				sJson.GLOBAL_CSVE["customEmailNotification"] = document.getElementById("customEmailNotification").value;
+ 		}
+
+ 		var i = 0;
+ 		var shtId;
+        var defaultProps = {"isAlreadyUpdated":true,"ignoreForRecTrg":true,"extractMode":"latest"};
+ 		var props = {
+ 			simple: ["from", "subject", "fileName", "active", "isAlreadyUpdated", "ignoreForRecTrg", "append"],
+ 			complex: [
+                {
+ 					prop: "extractMode",
+ 					dependentProps: ["extractionDate"],
+ 					dependentOn: "byDate"
+ 				}, {
+ 					prop: "appendFormula",
+ 					dependentProps: ["formulaColumns", "formulas"],
+ 					dependentOn: true
+ 				}, {
+ 					prop: "filter",
+ 					dependentProps: ["filterColumns", "filterValues"],
+ 					dependentOn: true
+ 				}
+ 			]
+ 		}
+ 		var inputE,
+ 		complexProp,
+ 		simpleProp;
+
+ 		$("#sheets > option").each(function () {
+
+ 			shtId = $(this).val();
+ 			sJson[shtId + "_SHEET_CSVE"] = {};
+ 			sJsonSht = sJson[shtId + "_SHEET_CSVE"];
+ 			sJsonSht["name"] = $(this).text();
+
+ 			for (var type in props) {
+ 				if (type == "simple")
+ 					for (var iProps = 0; iProps < props[type].length; iProps++) {
+ 						simpleProp = props[type][iProps];
+ 						inputE = document.getElementById(simpleProp + "_" + shtId);
+                        
+                        if(purpose == "default" && defaultProps[simpleProp]){ 
+                        
+ 							sJsonSht[simpleProp] = defaultProps[simpleProp];
+                            
+                            if (inputE.getAttribute("type") != "checkbox")
+ 							   inputE.value = defaultProps[simpleProp];
+ 						    else
+ 							   inputE.checked = defaultProps[simpleProp];
+                               
+ 						} else if (inputE.getAttribute("type") != "checkbox")
+ 							sJsonSht[simpleProp] = inputE.value;
+ 						else
+ 							sJsonSht[simpleProp] = inputE.checked;
+ 					}
+ 				else if (type == "complex")
+ 					for (var iProps = 0; iProps < props[type].length; iProps++) {
+ 						complexProp = props[type][iProps];
+ 						inputE = document.getElementById(complexProp.prop + "_" + shtId);
+                        
+                        if(purpose == "default" && defaultProps[complexProp.prop]){ 
+                        
+ 							sJsonSht[complexProp.prop] = defaultProps[complexProp.prop];
+                            
+                            if (inputE.getAttribute("type") != "checkbox")
+ 							   inputE.value = defaultProps[complexProp.prop];
+ 						    else
+ 							   inputE.checked = defaultProps[complexProp.prop];
+                               
+ 						} else if (inputE.getAttribute('type') != "checkbox")
+ 							sJsonSht[complexProp.prop] = inputE.value;
+ 						else 
+ 							sJsonSht[complexProp.prop] = inputE.checked;                        
+                        
+ 						if (sJsonSht[complexProp.prop] == complexProp.dependentOn)
+ 							for (var iDependentProps = 0; iDependentProps < complexProp.dependentProps.length; iDependentProps++) {
+ 								sJsonSht[complexProp.dependentProps[iDependentProps]] = document.getElementById(complexProp.dependentProps[iDependentProps] + "_" + shtId).value;
+ 							}
+ 					}
+ 			}
+
+ 			if (purpose == "set") {
+ 				sheetsMeta[i] = {};
+ 				sheetsMeta[i].name = $(this).text();
+ 				sheetsMeta[i].dateCol = document.getElementById("dateColumn_" + shtId + "_CSVE").value;
+ 				sheetsMeta[i].daysWorth = document.getElementById("forDays_" + shtId + "_CSVE").value;
+ 				if (document.getElementById("removeRowsWeekly_" + shtId + "_CSVE").checked) {
+ 					sheetsMeta[i].remove = false;
+ 				} else {
+ 					sheetsMeta[i].remove = true;
+ 				}
+ 				if (document.getElementById("sortBeforeDel_" + shtId + "_CSVE").checked) {
+ 					sheetsMeta[i].sortDel = true;
+ 				} else {
+ 					sheetsMeta[i].sortDel = false;
+ 				}
+ 				i++;
+ 			}
+ 		});
+
+ 		if (purpose == "set") {
+ 			sJsonWeeklyTriggers["isSetWeekly"] = document.getElementById("weeklyTrigger").checked;
+ 			sJsonWeeklyTriggers["isSetDaily"] = document.getElementById("dailyTriggerDR").checked;
+ 			sJsonWeeklyTriggers["queryHostSheet"] = document.getElementById("qhs_CSVE").value;
+ 			
+ 			sJson.GLOBAL_CSVE["checkAgain_CSVE"] = document.getElementById("checkAgain_CSVE").checked;
+ 			sJson.GLOBAL_CSVE["checkAgainMins_CSVE"] = document.getElementById("checkAgainMins_CSVE").value;
+ 			sJson.GLOBAL_CSVE["checkAgainLimit_CSVE"] = document.getElementById("checkAgainLimit_CSVE").value;
+
+ 			if (sJsonWeeklyTriggers["isSetWeekly"])
+ 				google.script.run.withFailureHandler(genericFailureHandler).updateRowRemovalTrigger(sJsonWeeklyTriggers, 1, 2);
+ 			else if(sJsonWeeklyTriggers["queryHostSheet"] != "")
+ 				google.script.run.withFailureHandler(genericFailureHandler).updateRowRemovalTrigger(sJsonWeeklyTriggers, 0, 2);
+
+ 			if (sJsonWeeklyTriggers["isSetDaily"]){
+ 				google.script.run.withFailureHandler(genericFailureHandler).updateRowRemovalTrigger(sJsonWeeklyTriggers, 1, 1);
+                
+                }
+ 			else if(sJsonWeeklyTriggers["queryHostSheet"] != "")
+ 				google.script.run.withFailureHandler(genericFailureHandler).updateRowRemovalTrigger(sJsonWeeklyTriggers, 0, 1);
+
+ 			google.script.run.withSuccessHandler(genericSuccessHandler).withFailureHandler(genericFailureHandler).setProperties(sJson);
+ 		} else if (purpose == "default"){
+            sJson["defaultProps_CSVE"] = defaultProps;            
+            google.script.run.withSuccessHandler(genericSuccessHandler).withFailureHandler(genericFailureHandler).setDefaultProps(sJson);
+        } else {        
+ 			google.script.run.withSuccessHandler(genericSuccessHandler).withFailureHandler(genericFailureHandler).getReports(sJson);
+ 		}
+ 	}
+ }
+  $("#btnSet").on("click",control("set"));
+  
+  $("#btnSetDefProps").on("click",control("default"));
+  
+  $("#btnGetReports").on("click",control());  
+  
+  $("#btnSelectAll").on("click",function(){
+    $('input[id^="only"]').each(function(){
+      $(this).prop("checked",true);                
+    });
+  });
+  
+  $("#btnUnSelectAll").on("click",function(){
+    $('input[id^="only"]').each(function(){
+      $(this).prop("checked",false);                
+    });
+  });
+  
+  $("#sheets").change(function(){
+    $("#sheets > option").each(function(){
+      if (!$("#K_" + $(this).val()).hasClass("toggleDisplay"))
+      $("#K_" + $(this).val()).addClass("toggleDisplay")
+    });						
+    $("#K_" + $(this).val()).removeClass("toggleDisplay");
+  }				
+  );
+  
+  $('select[id^="extractMode_"]').change(function(){
+  var shtId,id,e;
+  var clName = "toggleDisplay";
+  shtId = $(this).prop('id').split('_').pop();
+  id = "#containerED_" + shtId;
+  e = $("#containerDS_" + shtId);
+  if($(this).val() != "byDate"){
+  if(!$(id).hasClass(clName)){
+  $(id).addClass(clName);
+  e.animate({height:104},500);
+  }
+  } else {
+    if($(id).hasClass(clName)){
+    $(id).removeClass(clName);
+    e.animate({height:133},500);
+    }
+  }
+  });        
+  
+  $('button[id^="btnShowDS_"]').on('click',function(){ 
+  var shtId = $(this).prop('id').split('_').pop();
+  var e = $("#containerDS_" + shtId);
+  var h;
+  var contracted = 29;
+  var show = 104;
+  h = e.height();
+  if(h > contracted){
+  e.animate({height:contracted},500);
+  } else {
+  e.animate({height:show},500);
+  }
+  return false;
+  });
+  
+  $('button[id^="btnShowFAF_"]').on('click',function(){ 
+  var shtId = $(this).prop('id').split('_').pop();
+  var e = $("#containerFAF_" + shtId);
+  var h;
+  var contracted = 29;
+  var show = 387;
+  
+  h = e.height();
+  if(h > contracted){
+  e.animate({height:contracted},500);
+  } else {
+  e.animate({height:show},500);
+  }
+  return false;
+  });
+  
+  function disableButtons(){
+    $("button").prop('disabled',true);
+  }
+  
+  function enableButtons(){
+    $("button").removeAttr('disabled');
+  }
+  function toggleProcDiv(){
+    $("#processing").toggle();
+  }
+  
+  function genericFailureHandler(e){  
+  
+  alert(e.message);
+  enableButtons();  
+  
+  if(document.getElementById("processing").style.display != "none")
+  toggleProcDiv();
+  }
+  
+  function genericSuccessHandler(){
+  enableButtons();
+  
+  if(document.getElementById("processing").style.display != "none")
+  toggleProcDiv();
+  }
+  
+//  function actionGetReports(data){  
+//  enableButtons();
+//  toggleProcDiv();
+//  }
+//  
+//  function actionSetDefaultProps(){
+//  enableButtons();
+//  toggleProcDiv();
+//  }
+//  
+//
+//  
+//  function onFailurePropertiesSet(e){ //*
+//    enableButtons(); 
+//    toggleProcDiv();
+//    errorHandler(e);
+//  }
+//  function onFailureGetReports(e){
+//    enableButtons(); 
+//    toggleProcDiv();
+//    errorHandler(e);
+//  }
+//  function propertiesSet(){ 
+//    enableButtons(); 
+//    toggleProcDiv();
+//  }
+//  
+//  function onSuccess_queryUpdate(){ //*
+//    enableButtons();     
+//  }
+//  function onFailure_queryUpdate(e){ //*
+//    enableButtons(); 
+//    errorHandler(e);
+//  }
+//  function onWeeklyTriggerFailure(e){ //*
+//    enableButtons();
+//    toggleProcDiv();
+//    errorHandler(e);               
+//  }
+//  function reportUpdated(e){ 
+//    enableButtons(); 
+//    toggleProcDiv();
+//    
+//    if(e != 1){
+//      alert(e);
+//    }
+//  }				
+//  function dbUpdated(e){				
+//    alert("Error, view log for details");
+//    console.log(e);
+//  }
+//  function onTriggerFailure(e){
+//    alert("Error, view log for details");
+//    
+//    console.log(JSON.stringify(e));
+//  }
+//  
+//  function onInitializationFailure(e){ //*
+//  errorHandler(e);
+//  }
+//  
+}
+                 );  
+			
+			</script>
+  </body>
+</html>
